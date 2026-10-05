@@ -1,0 +1,759 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Semantic Prosody Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&display=swap">
+<style>
+/* Layout: sticky header with search + tab bar; one panel at a time; literature as filterable expandable cards. */
+:root{
+  --bg:#f2f5f7; --surface:#ffffff; --ink:#14232e; --muted:#53636f; --line:#d5dde3;
+  --accent:#0b6e77; --accent-soft:#d9eef0; --warn:#9a5b00; --warn-soft:#fbeed3;
+  --good:#1b7a4b; --bad:#b0352f;
+  --p1:#7a3e9d; --p2:#0b6e77; --p3:#b0352f; --p4:#2f6fb5; --p5:#8a6a00; --p6:#6b7780;
+  --disp:"Literata",Georgia,serif; --body:"Hanken Grotesk",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1a21; --surface:#17252e; --ink:#e6eef3; --muted:#9db0bc; --line:#2a3b46;
+  --accent:#4fc3cd; --accent-soft:#16363c; --warn:#f0b457; --warn-soft:#3a2d14;
+  --good:#5fd18f; --bad:#ff8a82;
+  --p1:#c79af0; --p2:#4fc3cd; --p3:#ff8a82; --p4:#7db4ee; --p5:#e2c15a; --p6:#9aa8b2; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1a21; --surface:#17252e; --ink:#e6eef3; --muted:#9db0bc; --line:#2a3b46;
+  --accent:#4fc3cd; --accent-soft:#16363c; --warn:#f0b457; --warn-soft:#3a2d14;
+  --good:#5fd18f; --bad:#ff8a82;
+  --p1:#c79af0; --p2:#4fc3cd; --p3:#ff8a82; --p4:#7db4ee; --p5:#e2c15a; --p6:#9aa8b2; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px}
+header.top{padding-block:22px 12px}
+h1{font-family:var(--disp);font-size:clamp(26px,5vw,38px);line-height:1.1;margin:0 0 6px;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0;max-width:62ch}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding-block:10px 0}
+.searchrow{display:flex;gap:10px;align-items:center;position:relative}
+.search{flex:1;min-width:0;display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+kbd{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+#results{position:absolute;left:0;right:0;top:100%;margin-top:6px;background:var(--surface);border:1px solid var(--line);border-radius:8px;max-height:60vh;overflow:auto;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+#results button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 12px;color:var(--ink);font:inherit;cursor:pointer}
+#results button:hover,#results button:focus-visible{background:var(--accent-soft);outline:none}
+#results .rt{font-weight:600}#results .rs{color:var(--muted);font-size:13px}
+#results .rk{font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.tabs{display:flex;gap:2px;overflow-x:auto;margin-top:10px;scrollbar-width:thin}
+.tab{flex:none;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:inherit;font-weight:600;padding:9px 12px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:focus-visible,.chip:focus-visible,.card>button:focus-visible,.btn:focus-visible,.fp>button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.theme{flex:none;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 11px;cursor:pointer;font:inherit}
+main{padding-block:22px 60px}
+section.panel[hidden]{display:none}
+h2{font-family:var(--disp);font-size:clamp(21px,3.5vw,27px);margin:0 0 4px;text-wrap:balance}
+h3{font-family:var(--disp);font-size:18px;margin:26px 0 8px}
+.lede{color:var(--muted);max-width:68ch;margin:0 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--accent)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.grid>*{min-width:0}
+.big{font-family:var(--disp);font-size:19px;line-height:1.4;max-width:60ch;text-wrap:pretty}
+.big em{color:var(--accent);font-style:normal;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.chip{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--c,var(--accent))}
+/* lineage */
+.lineage{display:flex;gap:0;overflow-x:auto;padding-bottom:6px}
+.lin{flex:1 0 150px;border-top:3px solid var(--accent);padding:10px 12px 0 0}
+.lin b{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.lin div{font-size:13px;color:var(--muted);margin-top:2px}
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600}
+.note{background:var(--warn-soft);color:var(--ink);border-left:3px solid var(--warn);border-radius:6px;padding:10px 12px;font-size:14px;margin:14px 0}
+.note b{color:var(--warn)}
+/* timeline */
+.tl{position:relative;margin:0;padding:0;list-style:none}
+.tl:before{content:"";position:absolute;left:61px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl li{display:grid;grid-template-columns:52px 20px 1fr;align-items:start;gap:0;margin-bottom:6px}
+.tl .yr{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;padding-top:9px;padding-right:6px}
+.tl .nd{width:10px;height:10px;border-radius:50%;background:var(--c);margin:13px 0 0 5px;position:relative;box-shadow:0 0 0 3px var(--bg)}
+.tl button{text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--ink);font:inherit;cursor:pointer}
+.tl button:hover{border-color:var(--accent)}
+.tl button b{display:block}.tl button span{color:var(--muted);font-size:13px}
+/* lit cards */
+.cards{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:8px}
+.card[hidden]{display:none}
+.card>button{display:grid;grid-template-columns:1fr auto;gap:4px 12px;width:100%;text-align:left;background:none;border:0;color:var(--ink);font:inherit;padding:12px 14px;cursor:pointer;align-items:start}
+.card .t{font-family:var(--disp);font-weight:600;font-size:17px;line-height:1.3}
+.card .s{grid-column:1;color:var(--muted);font-size:14px}
+.card .y{font-family:var(--mono);font-size:12px;color:var(--muted);grid-row:1;grid-column:2}
+.card .tags{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--muted)}
+.tag.w{border-color:var(--warn);color:var(--warn)}
+.card .body{padding:0 14px 14px;border-top:1px dashed var(--line);margin-top:0}
+.card .body[hidden]{display:none}
+.f{display:grid;grid-template-columns:96px 1fr;gap:4px 14px;padding:9px 0;border-bottom:1px solid var(--line)}
+.f:last-of-type{border-bottom:0}
+.f dt{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);padding-top:3px}
+.f dd{margin:0;min-width:0}
+.cite{font-size:13px;color:var(--muted);background:var(--bg);border-radius:6px;padding:8px 10px;margin:12px 0 8px}
+.btn{background:var(--accent);color:var(--bg);border:0;border-radius:6px;padding:6px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* bars */
+.bars{display:grid;gap:10px}
+.br{display:grid;grid-template-columns:minmax(120px,230px) 1fr 58px;gap:10px;align-items:center;font-size:13px}
+.br .tr{height:16px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.br .fill{height:100%;background:var(--bad);width:0;transition:width .6s}
+.br .v{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.br small{display:block;color:var(--muted)}
+@media(max-width:560px){.br{grid-template-columns:1fr 56px}.br .tr{grid-column:1/-1;order:3}}
+@media (prefers-reduced-motion:reduce){.br .fill{transition:none}}
+/* flashpoints */
+.fp{background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:8px}
+.fp>button{width:100%;display:flex;justify-content:space-between;gap:12px;text-align:left;background:none;border:0;color:var(--ink);font:inherit;font-weight:600;padding:12px 14px;cursor:pointer}
+.fp .sides{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 14px}
+.fp .sides[hidden]{display:none}
+.fp .sd{border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-width:0}
+.fp .sd b{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+@media(max-width:560px){.fp .sides{grid-template-columns:1fr}}
+.ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.ck input{margin-top:4px;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.ck label{cursor:pointer}
+.ck input:checked+label{color:var(--muted);text-decoration:line-through}
+.prog{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.refs{counter-reset:r;list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.refs li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;font-size:14px}
+.refs li>div{min-width:0}
+.gl{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.gl>div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}
+.gl b{font-family:var(--disp)}
+.empty{color:var(--muted);padding:20px;text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+.toast.on{opacity:1}
+mark{background:var(--warn-soft);color:inherit;border-radius:2px}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Walker research folder · 25 works</div>
+  <h1>Semantic Prosody Field Guide</h1>
+  <p class="sub">A quick-reference version of your master document: definitions, origins, the debate, and every paper in your folder. Search anything, filter the literature, copy a citation.</p>
+</header>
+<div class="bar">
+  <div class="searchrow">
+    <div class="search"><span aria-hidden="true" style="color:var(--muted);margin-right:8px">⌕</span><input id="q" type="search" placeholder="Search terms, authors, findings…" autocomplete="off" aria-label="Search the guide"><kbd>/</kbd></div>
+    <button class="theme" id="themeBtn" aria-label="Toggle light or dark theme">◐</button>
+    <div id="results" hidden></div>
+  </div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+</div>
+<main id="main"></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- DATA (from the master document) ---------- */
+const PH={founding:{n:"Founding",c:"--p1"},consol:{n:"Consolidation",c:"--p2"},crit:{n:"Critique",c:"--p3"},test:{n:"New tests",c:"--p4"},app:{n:"Applications",c:"--p5"},periph:{n:"Peripheral",c:"--p6"}};
+
+const LIT=[
+{id:"louw",y:1993,short:"Louw",title:"Irony in the text or insincerity in the writer?",ph:"founding",
+ cite:"Louw, B. (1993). Irony in the text or insincerity in the writer? The diagnostic potential of semantic prosodies. In M. Baker, G. Francis and E. Tognini-Bonelli (Eds.), *Text and Technology: In Honour of John Sinclair* (pp. 157–176). John Benjamins.",
+ one:"Names the concept and uses it as a test for irony and insincerity.",
+ tags:["Full text"],
+ f:[["Question","Can a corpus-derived prosody give an objective test for irony and for insincerity?"],
+ ["Core claim","Irony draws its effect from a collocative clash: a word is used against the evaluative company it normally keeps, and the reader senses the clash, often subliminally. A consistent background prosody must exist to clash with."],
+ ["Evidence","Concordances (18 million words, later 37 million) for *utterly* (overwhelmingly unfavourable), which explains the ominous undertone of Larkin's “Utterly unlike the snow”; *bent on* (destruction, mayhem), making Lodge's “bent on self-improvement” in *Small World* ironic; *days are* in Larkin's “Days”; *fine friend*."],
+ ["Insincerity","A British Council speaker called UK–Zimbabwe university links “symptomatic of” the University of Zimbabwe's reputation. *Symptomatic of* collocates with paranoia and disorders, so Louw suggests the clash may reveal a concealed attitude."],
+ ["Other points","Prosody can split by grammar (BUILD UP is good when transitive with a human subject, bad when intransitive). Prosodies “hunt in packs”. They are “essentially a phenomenon that has been only revealed computationally”, so intuition cannot reliably find them."],
+ ["Why it matters","It set up the two claims critics attack most: deviation signals irony or insincerity, and prosody is hidden from intuition."]]},
+
+{id:"stubbs",y:1995,short:"Stubbs",title:"Collocations and semantic profiles",ph:"founding",
+ cite:"Stubbs, M. (1995). Collocations and semantic profiles: On the cause of the trouble with quantitative studies. *Functions of Language*, 2(1), 23–55.",
+ one:"Supplies the statistics and the CAUSE case study.",
+ tags:["Scan: via project guide"],warn:"Both copies in your folder are scans with no text layer. This entry follows your project guide and template notes, spot-checked against later papers that quote Stubbs. Treat page numbers and quotes as unconfirmed.",
+ f:[["Question","Does CAUSE carry a consistent unfavourable prosody, and which statistics validly show it?"],
+ ["Data","Corpora from the 1-million-word LOB to the 120-million-word Cobuild/Bank of English; comparison with OALD, Longman, Collins and the OED."],
+ ["Findings","In the 1-million-word corpus “nearly 80 per cent” of CAUSE's collocates are negative, 18% neutral, 2% positive. The pattern holds at 120 million (core collocates *problem(s), damage, death(s), disease, concern, cancer, pain, trouble*). Dictionaries define CAUSE neutrally. A rarer sense, “a good cause”, is neutral to positive, so sense matters."],
+ ["Contrasts","AFFECT almost uniformly negative; CREATE mixed; REASON largely neutral; PROVIDE positive. “Causing work” is bad, “providing work” is good."],
+ ["Statistics","I-value is a log transform of observed/expected frequency, non-directional and unreliable for rare items. T-score tracks raw joint frequency. Use both as rough comparative indicators and filter by minimum frequency."],
+ ["Theory","Argues against Chomsky's rejection of discovery procedures; links frequent usage to the langue/parole boundary; notes implications for stylistics."],
+ ["Why it matters","Fixed the CAUSE example and the I/T toolkit nearly every later paper reuses. Dating of his shift to “discourse prosody” differs: Partington (2004) says 2001, Cheng (2013) says 1995."]]},
+
+{id:"part98",y:1998,short:"Partington",title:"Connotation and semantic prosody",ph:"consol",
+ cite:"Partington, A. (1998). Connotation and semantic prosody. Ch. 4 of *Patterns and Meanings* (pp. 65–78). John Benjamins.",
+ one:"Places prosody inside the older idea of connotation.",tags:["Full text"],
+ f:[["Question","How does prosody fit within older ideas of connotation, and what is it good for?"],
+ ["Data","Newspaper CD-ROMs (*The Independent* 1992, *The Telegraph* 1993); five dictionaries from the 1980s and 1995."],
+ ["Findings","Three connotation types: social/situational, cultural, expressive. Prosody is the collocational subtype of expressive connotation. COMMIT (41 citations: grievous bodily harm, suicide, deception) and RIFE (crime, disease, poverty) are “disaster magnets”. SET IN is unflagged in three non-learner dictionaries but flagged by Cobuild 1987 and all four 1995 learner dictionaries. PEDDLE is almost always unfavourable yet noted by only one 1995 dictionary."],
+ ["Beyond words","DEALINGS has only 4 explicit negative modifiers in 58 lines but sits with *investigation into, allegations about, disreputable parties*, so prosody can work above single words. GREEN FUNDAMENTALISM shows a newspaper installing a negative prosody by repetition. English IMPRESSIVE vs Italian *impressionante* is a prosodic false friend."]]},
+
+{id:"part04",y:2004,short:"Partington",title:"“Utterly content in each other's company”",ph:"consol",
+ cite:"Partington, A. (2004). “Utterly content in each other's company”: Semantic prosody and semantic preference. *International Journal of Corpus Linguistics*, 9(1), 131–156.",
+ one:"Separates semantic preference from semantic prosody.",tags:["Full text","2 copies"],
+ f:[["Question","What are semantic prosody and semantic preference, and how do they relate?"],
+ ["HAPPEN group","1-million-word academic corpus. SET IN almost always unfavourable. Of 50 lines each, *happened* is bad in 24, good in 5, neutral in 21; *occur* bad in 36 of 150 lines vs good in 14; *take place* unfavourable in 31 of 131 vs favourable in 11; *come about* shows little prosody. HAPPEN and OCCUR also prefer non-factual contexts (modals, questions, conditionals)."],
+ ["Maximizers","*Absolutely* prefers superlatives; *perfectly* favourable items; *utterly, totally, completely, entirely* prefer “absence” and “change of state” and carry an unfavourable prosody. *Utterly pleasant* is possible as a deliberate exception."],
+ ["Relationship","Preference is a set of collocates; prosody can extend over a wider stretch. Examples: UNDERGO, CAUSE, BROOK."],
+ ["Terminology","Disagrees with Stubbs's “discourse prosody”: because competent speakers share primings, prosody is not wholly outside semantics, so he keeps “semantic”."],
+ ["Strength varies","SET IN near-categorical; BENT ON less so (*bent on a career in computing* is not ironic); prosody may differ by genre (LAVISH)."]]},
+
+{id:"xm",y:2006,short:"Xiao & McEnery",title:"Collocation, semantic prosody, and near synonymy",ph:"consol",
+ cite:"Xiao, R. and McEnery, T. (2006). Collocation, semantic prosody, and near synonymy: A cross-linguistic perspective. *Applied Linguistics*, 27(1), 103–129. doi:10.1093/applin/ami045",
+ one:"Shows prosody replicates in Mandarin and varies among near-synonyms.",tags:["Full text"],
+ f:[["Question","Is prosody a general property of language or an artefact of English?"],
+ ["Data","Matched ~1-million-word English (FLOB, Frown) and Mandarin (LCMC) corpora, plus larger ones (BNC; 15-million-word PDC2000). MI with minimum frequency of 3 (20 for larger corpora)."],
+ ["Findings","English CAUSE as a verb is 78% negative (223 of 287). Among near-synonyms: AROUSE 65%, LEAD TO 49%, RESULT IN/FROM 47%, GIVE RISE TO 46%, BRING ABOUT 38%. Chinese CAUSE words range from 99% negative (*zhi4shi3*) to 98% positive (*cu4cheng2*). The CONSEQUENCE group shows graded scales."],
+ ["PRICE vs COST","Log-likelihood found no overall difference, but “at any price/cost” is 75–100% metaphorical and negative, so claims must be pinned to phraseological patterns."],
+ ["Definition","Semantic preference belongs to the collocates; semantic prosody to the node."],
+ ["Why it matters","Chief cross-linguistic evidence against the “figment” worry; stakes for translation (euthanasia advocates prefer *bring about death* to *cause death*)."]]},
+
+{id:"zeth",y:2006,short:"Zethsen",title:"Creating awareness about a versatile tool",ph:"consol",
+ cite:"Zethsen, K. K. (2006). Semantic prosody: Creating awareness about a versatile tool. *Tidsskrift for Sprogforskning*, 4(1–2), 275–294.",
+ one:"A primer and manifesto for applied uses.",tags:["Full text"],
+ f:[["Aim","A primer and manifesto, not new research."],
+ ["Content","Traces the idea from Porzig and Firth to Sinclair's four relations (collocation, colligation, semantic preference, semantic prosody)."],
+ ["Applications","Lexicography; critical discourse analysis (TELLY's lazy-passive collocates; New Labour keywords); persuasive writing (Danish *kvalitetstid*, split 8/8 positive vs ironic/negative in 16 lines); translation (Danish *imponerende* patterns like IMPRESSIVE, unlike Italian *impressionante*); language teaching."]]},
+
+{id:"cheng",y:2013,short:"Cheng",title:"“Semantic Prosody” (Encyclopedia of Applied Linguistics)",ph:"consol",
+ cite:"Cheng, W. (2013). Semantic prosody. In C. Chapelle (Ed.), *The Encyclopedia of Applied Linguistics*. Blackwell. doi:10.1002/9781405198431.wbeal1062",
+ one:"A short map of who said what.",tags:["Full text","2 copies","Secondary source"],
+ f:[["What it is","Reference entry with a chronological review of definitions (Sinclair 1987, Louw 1993, Bublitz 1996, Stubbs, Sinclair 1996 and 2004, Partington 2004, Hoey 2005, Baker et al. 2006)."],
+ ["Themes","Four themes from Hunston (2007) and Stewart (2010): evaluative function; hidden quality and semantic neutrality; diachronic vs synchronic; word vs longer unit."],
+ ["Also","Reproduces Stewart's two feature lists, his proposed split, and his objections to inferring prosody from concordances."],
+ ["Use","A map, not a primary source. Check claims against the originals."]]},
+
+{id:"hun",y:2007,short:"Hunston",title:"Semantic prosody revisited",ph:"crit",
+ cite:"Hunston, S. (2007). Semantic prosody revisited. *International Journal of Corpus Linguistics*, 12(2), 249–268. doi:10.1075/ijcl.12.2.09hun",
+ one:"The term names two things; observation is not explanation or prediction.",tags:["Full text","2 copies"],
+ f:[["Claim 1","Most writers use “semantic prosody” for the implied attitude of a word given its typical companions; Sinclair uses it for the discourse function of a unit of meaning. She suggests “semantic preference” or “attitudinal preference” for the first."],
+ ["Counter-examples","In *New Scientist*, CAUSE combines with inanimate processes and no attitude is discernible. BUDGE flips from frustration to determination with a first-person subject. PERSISTENT is negative before a noun but can go either way predicatively."],
+ ["Claim 2","Corpus evidence can record a pattern (observation) or explain a reader's reaction, but Louw's claim that an atypical collocation necessarily signals irony is prediction. One clean counter-example, “fresh to the point of invigoration”, undermines the prediction."],
+ ["Claim 3","In a 13-article “conflict corpus” of adversarial papers, SEEM(S) TO THINK really adds negative evaluation, SIGNIFICANCE is only the topic of dispute, and TO HAVE sits near negative evaluation in 20 of 28 instances only because the whole corpus is hostile."],
+ ["Your notes","Your Venn notes mark the explanation-vs-prediction distinction as aimed at Louw (“NOT explicitly said”). The paper does cite Louw's irony claim by name, but the framing as a rebuttal is your inference."]]},
+
+{id:"philip",y:2010,yl:"c. 2010",short:"Philip",title:"Why prosodies aren't always present",ph:"crit",
+ cite:"Philip, G. Why prosodies aren't always present: Insights into the idiom principle. (Venue and year not shown in the file; it cites Stewart 2009, so c. 2009–11.)",
+ one:"Splits semantic association from semantic prosody; analysability explains absence.",tags:["Full text","Citation incomplete"],
+ f:[["Question","Why do some phrases show no prosody?"],
+ ["Move 1","Louw's “aura of meaning” describes rather than defines, and drops the functional half. Philip splits semantic association (optional, psychological, word-centred, polarised) from semantic prosody (obligatory, pragmatic, phraseological, text-bound)."],
+ ["Move 2","Semantic analysability: prosody matters in proportion to how far a phrase's meaning cannot be recovered from its words. Five cases run along the scale: FROM BAD TO WORSE, CAUGHT IN THE ACT, CAUGHT RED-HANDED, THE GRASS IS GREENER, COLD TURKEY."],
+ ["Mechanism","Deliteralisation: as a phrase's literal sense fades, pragmatic information about use fills the gap. The obsolete *wet the swab* shows meaning lost when the community of use disappears."],
+ ["Against Whitsitt","Answers his “figment of corpus linguists' imaginations” remark: prosody is sometimes redundant for good linguistic reasons."]]},
+
+{id:"stew",y:2010,short:"Stewart",title:"Semantic Prosody: A Critical Evaluation",ph:"crit",
+ cite:"Stewart, D. (2010). *Semantic Prosody: A Critical Evaluation*. Routledge Advances in Corpus Linguistics.",
+ one:"Book-length audit; proposes “discourse prosody” vs “semantic prosody”.",tags:["Full text","192-page proof"],
+ f:[["Aim","Test every commonly made claim against fresh BNC evidence. He does not say prosody is fake."],
+ ["Ch. 1–3","Sinclair's version is synchronic, functional, unit-based and not restricted to good/bad. Louw's is diachronic, word-based and binary. The “tainting” metaphor is rarely tested with historical data."],
+ ["Ch. 4–5","Accounts disagree, often unacknowledged, on word vs sequence and neutral vs evaluative. Many cited examples do not clearly show evaluation. Criteria for “consistent” are loose."],
+ ["Ch. 6","The format of the concordance line shapes what analysts see."],
+ ["Ch. 7","Intuition is involved at every step of corpus work, so the claim that prosody is inaccessible to intuition is overstated. Stubbs's “80%” and Xiao & McEnery's coding rest on analyst intuition."],
+ ["Ch. 8","Hoey's lexical priming overlaps, but its individual, psychological grounding sits awkwardly with using a community corpus as a stand-in for a speaker."],
+ ["Ch. 9","Split the term into discourse prosody (Sinclair) and semantic prosody (Louw). Open questions include how to define the co-text around a node and a test of the diachronic story."]]},
+
+{id:"sn",y:2012,short:"Smith & Nordquist",title:"A critical and historical investigation",ph:"test",
+ cite:"Smith, K. A. and Nordquist, D. (2012). A critical and historical investigation into semantic prosody. *Journal of Historical Pragmatics*, 13(2), 291–312.",
+ one:"How CAUSE became negative, and why prosody may live in constructions.",tags:["Full text"],
+ f:[["Question","How did CAUSE get its negative prosody?"],
+ ["Data","353 coded tokens from Early Modern English (Helsinki Corpus, 1500–1710) vs 208 from the Frown Corpus (early 1990s); “case” senses excluded."],
+ ["Findings","Negative tokens rise from 48% to 80.3%; neutral falls from 41% to 18.3%. The shift is steeper for verbs. Verbal CAUSE had a non-negative Causative Construction (*caused my horse to be put into his own stable*) that later disappeared. *Cause of NP* is consistently negative; *cause for NP* is often positive."],
+ ["Neutralisation","In Frown, science texts show nearly a third neutral tokens (19 of 64); popular lore and belles lettres are almost entirely negative."],
+ ["Argument","Prosody is stored at the level of the construction, built from exemplars. They cite Nordquist (2004: 70% negative in elicited sentences) and Ellis and Frey (2009: priming results)."],
+ ["Against Louw","Reject a word-level account; treat science neutralisation as a register fact, not irony."]]},
+
+{id:"tl",y:2019,yl:"c. 2019",short:"Tang & Liu",title:"Solving contradictions with prosody concord",ph:"test",
+ cite:"Tang, X. and Liu, G. Solving contradictions in semantic prosody analysis with prosody concord. *International Journal of Corpus Linguistics*. (Scanned 30-page PDF named “1.pdf”; year and volume not on the pages read; file metadata suggests c. 2019.)",
+ one:"Collostructions resolve the ALLEVIATE/CAUSE contradiction.",tags:["OCR of scan","Citation incomplete"],
+ f:[["Problem","Collocation-based analysis gives negative prosody to ALLEVIATE and CURE because they collocate with disease and problem, which contradicts common sense (Whitsitt 2005 noticed this)."],
+ ["Proposal","Use a collostruction (a construction with slots and statistically attracted fillers, via Lexeme-based Collexeme Analysis) as the locus of analysis, with one presupposition and three rules (including Head-Argument and Head-Adjunct Prosody rules)."],
+ ["Results","Case studies of BUDGE, CREDIBILITY, CAUSE and ALLEVIATE (BNC). ALLEVIATE comes out mainly positive; CAUSE mainly neutral (in 57.81% of collostructions no collexeme primes a prosody)."],
+ ["Definition","“An implicit but regular evaluative meaning associated with a lemma”; the word-vs-unit schools Hunston describes are two views of one thing (following Morley and Partington 2009)."]]},
+
+{id:"sk",y:2024,yl:"2023/24",short:"Sugawara & Kambara",title:"Revisiting semantic prosody of cause",ph:"test",
+ cite:"Sugawara, Y. and Kambara, K. (2023/24). Revisiting semantic prosody of *cause*: A sentiment analysis. *Journal of Corpus-based Lexicology Studies*, 6. Japan Association for English Corpus Studies, Lexicology SIG.",
+ one:"CAUSE retested with collexeme analysis and VADER; mostly neutral.",tags:["Full text","Method caution"],warn:"VADER scores isolated words, so it may under-detect the prosody this literature locates in the construction.",
+ f:[["Question","Is CAUSE really negative once raw frequency is replaced by collostructional strength?"],
+ ["Data","337 [subject CAUSE object] cases from the TED Corpus Search Engine (about 4.6 million tokens); co-varying collexeme analysis, then VADER scores for subjects, objects and combined phrases."],
+ ["Findings","Neutrality predominates in all quartiles; “Neutral–Neutral” is the most common pairing, with objects leaning slightly negative. They conclude CAUSE is not inherently negative and earlier work may have overstated it."],
+ ["Authors' caveats","Register is TED talks; positive–positive combinations were rare and unexplained; context left for later work."]]},
+
+{id:"mans",y:2013,short:"Mansoor & Salman",title:"Collocation, colligation and semantic prosody",ph:"app",
+ cite:"Mansoor, M. S. and Salman, Y. M. (2013). Collocation, colligation and semantic prosody. (Journal not shown on the copy; received 2012, accepted April 2013; Cihan University, Erbil.)",
+ one:"A teaching-oriented study of the adverb *vitally*.",tags:["Full text","Citation incomplete","Full text added"],
+ f:[["Aim","Clear definitions of the three notions for EFL learners and teachers."],
+ ["Data","260 BNC hits for *vitally*, coded positive, neutral or negative and by text domain."],
+ ["Findings","137 hits (about 53%) positive, 73 (28.08%) neutral, 50 (19.23%) negative. Learner dictionaries and textbooks still give too little prosody information."],
+ ["Note","Coding by the authors; no reliability check reported. The full text confirms the figures and the dates (received 5/11/2012, accepted 16/4/2013). Journal still not shown."]]},
+
+{id:"benna",y:2014,short:"Benna",title:"Towards a semantic prosodies approach in the study of irony",ph:"app",
+ cite:"Benna, S. (2014). Towards a semantic prosodies approach in the study of irony. *Journal of Advances in Linguistics*, 5(1), 493–497.",
+ one:"Louw's irony account applied to Hemingway.",tags:["Full text","Small-scale"],
+ f:[["Data","Four items from Hemingway's *A Farewell to Arms* (*disgraced, beautiful, devotion, handsomly*) checked in the 100-million-word BNC with log-likelihood (SARA concordancer)."],
+ ["Findings","*Disgraced* goes with people who have lost rank (so “the car looked disgraced” clashes); *beautiful* with things pleasing to the eye; *devotion* with duty and love; *handsomely* returned no BNC hits."],
+ ["Position","Adopts Louw's collocative clash but disagrees that prosody is inaccessible to intuition: native speakers he asked guessed the same collocates."],
+ ["Note","The Hemingway readings rest on the author's literary interpretation."]]},
+
+{id:"shah",y:2023,short:"Shahzadi et al.",title:"Semantic prosody in news headlines",ph:"app",
+ cite:"Shahzadi, K., Jahan, J. and Jahanzeb, K. (2023). An analysis of semantic prosody in news headlines. Vol. 7(3). (Journal name not shown on the copy.)",
+ one:"LIWC sentiment on 10,000 headlines.",tags:["Full text","Do not cite unchecked"],warn:"LIWC is a dictionary-based sentiment tool that scores words, not collocational patterning. The file does not explain how reader responses were collected, and several 2020–2023 references could not be verified. A clear case of the sentiment/prosody conflation.",
+ f:[["Data","10,000 headlines (2,500 each from CNN, Fox News, ESPN, Bleacher Report, Entertainment Weekly, Variety, CNET, Wired), analysed with LIWC."],
+ ["Reported","52.4% positive, 11.9% negative, 35.7% neutral; entertainment most positive (67.8%), politics most negative (14.1%); online more positive than print; positive “prosody” headlines drew more engagement."]]},
+
+{id:"akh",y:2025,short:"Akhtar et al.",title:"Semantic prosody in The Runaways",ph:"app",
+ cite:"Akhtar, N., Nasar, W., Anwar, M. N. and Sajid, E. (2025). Semantic prosody in *The Runaways*: A corpus-based investigation of political discourse. *Journal of Applied Linguistics and TESOL*, 8(4).",
+ one:"Corpus stylistics on a Pakistani political novel.",tags:["Full text","Partly read"],
+ f:[["Method","Mahlberg's model of corpus stylistics; LancsBox X; keywords and lexical bundles in Fatima Bhutto's novel."],
+ ["Findings","Nodes such as *Pakistani, Islam, journey, alone, power* link to identity, displacement and social control; *jihad, faith, radical, freedom, infidels* and bundles like *in the middle of* are read as negative prosody tied to struggle, threat and ethical doubt."],
+ ["Note","I read the abstract, framing and conclusion. The study treats prosody largely as node-level polarity, in the Louw tradition."]]},
+
+{id:"sidra",y:2025,short:"Sidra & Anbreen",title:"Beneficent in Pickthall's Qur'an translation",ph:"app",
+ cite:"Sidra and Anbreen, T. (2025). Semantic prosody of *Beneficent* in Pickthall's rendering of the Quranic text. *Qualitative Research Journal for Social Studies*, 2(3).",
+ one:"Sinclair's extended lexical unit applied to a Divine Name.",tags:["Draft copy"],warn:"Your file is labelled a corrected resubmission draft, not the published version.",
+ f:[["Method","Extended lexical unit; MI3 within 5L–5R; thematic coding of concordance lines supported by tafsir; Bayesian posterior predictive test."],
+ ["Findings","Significant collocates *Merciful, One, Say*; evaluative prosody of *Beneficent* 100% favourable; discourse prosodies of invocation, obedience and rejection of attributing offspring to Allah, with invocation over-represented."],
+ ["Theory","Neutral collocates are absorbed into a favourable environment, so the node appears to determine the prosody; they say this challenges Louw and supports Sinclair's unit of meaning. Scope is one translation and one Divine Name."]]},
+
+{id:"fab",y:2026,short:"Fabian",title:"The lexeme “weaponization”",ph:"app",
+ cite:"Fabian, M. (2026). Semantic prosody of the lexeme “weaponization” in English-language media discourse. Uzhhorod National University, no. 29, 296–306.",
+ one:"A stable negative prosody in news corpora, 2021–2026.",tags:["Text decoded","Figures inconsistent"],warn:"The abstract gives 0.22 PMW (2021) rising to 1.42 PMW (2023) but the conclusions give 220.00 and 1033.70 PMW; corpus size differs between the English and Ukrainian summaries. The PDF text was garbled and I decoded it. Confirm figures in the published version.",
+ f:[["Data","NOW and COCA corpora, 2021–2026; MI, t-score and log-likelihood combined with framing theory and critical discourse analysis."],
+ ["Findings","Negative prosody in 91% of contexts; collocations in energy, food security, ecology and state institutions; frequency peak in 2023; a 2025–26 shift from describing external threats to labelling domestic legal and state systems."]]},
+
+{id:"part13",y:2013,yl:"c. 2012–14",short:"Partington",title:"Evaluative prosody (ch. 10)",ph:"consol",
+ cite:"Partington, A. Evaluative prosody. Ch. 10, pp. 279–303. (Book, editors and year not shown on the file; its references run to 2011.)",
+ one:"Renames the concept “evaluative prosody” and answers Hunston, Stewart and Whitsitt.",tags:["Full text","Citation incomplete","Second batch"],
+ f:[["Data","SiBol 05, a 150-million-word corpus of UK broadsheet newspaper texts from 2005."],
+ ["Terminology","Name is much debated: Stubbs mused “pragmatic prosody” or “discourse prosody” (2001; the latter “somewhat tautological”), Bublitz (2003) “emotive prosody”. Partington proposes “evaluative prosody”. Evaluation is a two-term good/bad system, annotated with a reason, e.g. (good: pleasurable), [bad: dangerous]."],
+ ["Two definitions","Textual: a process, the spreading of evaluation beyond single word boundaries. Lexical: an item has a prosody if it typically co-occurs with words of one polarity, especially where this is not obvious."],
+ ["Examples","*Brimming with* sits with positive items (confidence, hope). *Fraught with* has 326 occurrences: danger/s 67, risk/s 21, peril 10, hazards 2; it prefers danger, difficulty/problems, complications and anxiety."],
+ ["Responses","Hunston's word-vs-text worry is “a false” dichotomy: “two ways of viewing the same phenomenon”. Stewart: speakers use prosody intuitively even if they cannot articulate it. Whitsitt (2005): diachronic change is empirical and cannot be derived from a synchronic corpus; Partington offers case studies as “very strong empirical evidence” that prosodies develop."],
+ ["How common","Stubbs: about 5% of words in a 1,000-word sample (2001: 107). Sinclair: part of every unit of meaning. Reading Forest, Stubbs's definition is narrower, limited to non-obvious polarity."],
+ ["Variation","BUILD UP changes with syntax (Louw); LAVISH is bad in crime reporting but good in arts reviews; BUDGE depends on control (Duguid 2011)."],
+ ["Conclusion","Prosody exists because discourse must cohere evaluatively; it offers “perhaps the strongest evidence ever uncovered that, in normal communication, lexical items are co-selected”."]]},
+
+{id:"msu",y:2020,yl:"n.d.",short:"Meaning-shift chapter",title:"From a unit of meaning to a meaning-shift unit",ph:"crit",
+ cite:"Chapter 2, From a unit of meaning to a meaning-shift unit. Cambridge University Press. doi:10.1017/9781108758703.002. (Author and year not shown on the file, which cites works up to 2011.)",
+ one:"Argues prosody belongs to the unit of meaning, is synchronic, and is not inherently evaluative.",tags:["Full text","Citation incomplete","Second batch"],
+ f:[["Setting","Theoretical frame for the book's later L2 chapters. Walks through Sinclair's unit of meaning, then asks which items carry prosody (word, lemma or unit), a question it treats as one reason authors disagree."],
+ ["Claim 1","Prosody is a property of a unit of meaning and is obligatory there. Semantic preference and attitudinal preference are optional."],
+ ["Claim 2","It is not inherently evaluative; evaluation is one functional type. If prosody were obligatory and evaluative, everything would have to be evaluative."],
+ ["Claim 3","It is synchronic. The idiom principle is a psycholinguistic mechanism, so history is irrelevant at the time of use. Contrasted with Whitsitt's “flow” of meaning from “strong, full, bad words, into the weak, empty, innocent forms”."],
+ ["Claim 4","It is not “hidden”. What can be hidden is the pattern, especially where words are delexicalised, because automatic production is not consciously retrievable."],
+ ["Also","Notes bad prosodies are detected more often than good ones (Louw 2000; Partington 2004: 133; Stewart 2010: 46) and compares its account with Louw's."]]},
+
+{id:"li",y:2019,short:"Li",title:"Preserve and conserve in EFL teaching",ph:"app",
+ cite:"Li, E. (2019). A corpus-assisted study of synonyms in EFL teaching: Take preserve and conserve as examples. *Linguistics and Literature Studies*, 7(2), 39–50. doi:10.13189/lls.2019.070201",
+ one:"Sinclair's extended lexical unit applied to near-synonym teaching.",tags:["Full text","Teaching","Second batch"],
+ f:[["Data","100-million-word BNC; Sketch Engine (Word Sketch, Sketch Diff, logDice); frequency, genre, colligation, collocation, semantic preference, prosody."],
+ ["Findings","Five shared colligation patterns (object, modifier, pp_in-p, subject, and/or). *Preserve* prefers things abstract but important (integrity, unity, independence): keep something as it is. *Conserve* prefers natural resources and ecology (moisture, biodiversity, energy): use as little as possible so it lasts. Both create a mostly positive or neutral prosody, never negative in the object pattern; negative prosody is “marked”."],
+ ["Limits","BNC only; does not show learners' actual use; the author suggests adding a learner corpus."]]},
+
+{id:"looi",y:2024,short:"Looi & Cacciato",title:"Data-driven learning of semantic prosody",ph:"app",
+ cite:"Looi, J. and Cacciato, A. (2024). Data-driven learning: Technology-enhanced learning of semantic prosody. *Alsic*, 27(1). doi:10.4000/12dds",
+ one:"Teaching prosody to 83 students with YouGlish, SKELL and Milanote.",tags:["Full text","Teaching","Second batch"],
+ f:[["Data","83 undergraduate social sciences students in a compulsory English course (aiming at B2), Eastern France, 2023–24; questionnaires and 19 logbooks. Demonstration item *bring up* (to mention): undesirable for the interlocutor rather than negative in itself. Others: *end up, unbelievable/incredible, happen*; *set up* as a neutral comparison."],
+ ["Findings","63% found the activities useful, 22% neutral, 15% disagreed; 97% believed they could infer the subtler connotational meaning; 50% had trouble with the KWIC format; all 19 logbooks were positive. Milanote did not link formal and non-formal learning because students would not continue outside class."],
+ ["Argument","Normalise data-driven learning as a problem-solving tool: spontaneous, accessible, efficient, scaffolded. Prosody is described as marginal in English teaching."],
+ ["Limits","Exploratory. It tests learning outcomes and tools, not the concept of prosody."]]},
+
+{id:"davies",y:2020,short:"Davies",title:"English-Corpora.org: a guided tour",ph:"periph",
+ cite:"Davies, M. (2020). English-Corpora.org: a guided tour. (Two copies in the folder; the files differ.)",
+ one:"A resource guide to the corpora several papers use.",tags:["Resource","Second batch"],
+ f:[["What it is","Not prosody research. A guide to the English-Corpora.org collection and its collocate tools."],
+ ["Relevance","Covers corpora named in your papers: the BNC, NOW (11.3 billion+ words, 20 countries, 2010 to present; Fabian) and COCA (1.0 billion words, 1990–2019; Fabian)."]]},
+
+{id:"jiang",y:2023,short:"Jiang & Siyanova-Chanturia",title:"Multiword expressions in L1 and L2 Chinese",ph:"periph",
+ cite:"Jiang, S. and Siyanova-Chanturia, A. (2023). The processing of multiword expressions in L1 and L2 Chinese: Evidence from reaction times and eye movements. *The Modern Language Journal*. doi:10.1111/modl.12846",
+ one:"Not about prosody; indirect support for stored co-occurrence knowledge.",tags:["Full text","Peripheral"],
+ f:[["What it is","The text never uses the term. A grammaticality judgment task and an eye-tracking experiment show L1 and L2 Chinese speakers process collocations and higher-frequency phrases faster than controls."],
+ ["Relevance","Indirect psycholinguistic support for the priming strand (Hoey; Ellis and Frey; Smith and Nordquist)."]]}
+];
+
+const VOCAB=[
+["Node, collocate, span","The word under study, the words found near it, and the window counted as “near” (e.g. 4:4).","No","CAUSE as node; damage, problem as collocates (Stubbs 1995)"],
+["Collocation","Habitual co-occurrence of specific words, more often than chance predicts.","No","rancid butter, thunderous applause (Zethsen 2006)"],
+["Colligation","Co-occurrence with a grammatical category or pattern.","No","cases with a quantifier: in some cases (Stubbs 2001, via Zethsen and Partington 2004)"],
+["Semantic preference","The semantic set the collocates belong to; one step more abstract than collocation.","No","LARGE + words for quantities and sizes (Partington 2004)"],
+["Semantic prosody","An evaluative or attitudinal meaning attached to a word or phrase through its habitual company. The contested term.","Yes","SET IN + rot, decay, despair (Sinclair 1987)"],
+["Connotation","Meaning beyond the dictionary definition: social/situational, cultural, or expressive.","Partly","firm / stubborn / pig-headed (Partington 1998)"],
+["Unit of meaning","Sinclair's idea that meaning lives in a stretch of language built around an invariable core. Core and prosody obligatory; collocation, colligation and preference optional.","Via prosody","the naked eye; true feelings (Sinclair 1996, 2004, via Cheng 2013)"],
+["Lexical priming","Hoey's theory that each word is primed by accumulated encounters to occur with certain collocations, colligations and associations.","Via “pragmatic association”","Hoey 2005, via Partington 2004, Stewart 2010"],
+["Collostruction / collexeme","Attraction between a construction's slots and the words filling them.","Depends","Tang & Liu; Sugawara & Kambara"],
+["Prosody concord","Tang & Liu's term for combining word, collocation, colligation and preference information at construction level.","Yes","ALLEVIATE vs CAUSE"],
+["Semantic association","Philip's optional, psychological, word-centred “aura”, kept apart from prosody.","Yes","Philip"],
+["Discourse prosody","Stewart's name for Sinclair's functional sense; Stubbs later preferred it too.","Functional","Stewart 2010"],
+["KWIC","Key word in context: the concordance display.","—","Stewart 2010, ch. 6"],
+["MI / I-value","Log of observed/expected co-occurrence; relative strength of association.","—","Stubbs 1995"],
+["T-score","Tracks joint frequency; confidence that a pairing is not chance.","—","Stubbs 1995"],
+["Log-likelihood","Compares observed and expected counts; suits low-frequency items.","—","Benna; Xiao & McEnery"]
+];
+
+const DEFS=[
+["Sinclair (1987, 1991)","Observes SET IN and HAPPEN keep unpleasant company (“good” and “bad” semantic profiles).","Word or phrase","Good/bad"],
+["Louw (1993)","“a consistent aura of meaning with which a form is imbued by its collocates” (p. 157); tied to Firth's phonological prosody through “phonological colouring”.","Word","Binary"],
+["Sinclair (1996, 2004)","“attitudinal, and on the pragmatic side of the semantic/pragmatics continuum”; “expresses something close to the ‘function’ of an item”.","Whole unit of meaning","Functional"],
+["Stubbs (1995, 2001)","Collocational patterning that yields positive, negative or neutral profiles; later prefers “discourse prosody”.","Word, then discourse","Mostly good/bad"],
+["Partington (1998, 2004)","A collocational subtype of expressive connotation, “spread over a unit of language which potentially goes well beyond the single orthographic word”.","Unit","Favourable/unfavourable"],
+["Partington (c. 2012–14, ch. 10)","“Evaluative prosody”: the sharing of evaluation beyond single words (textual), or an item's typical co-occurrence with words of one polarity (lexical). Word-vs-text is “two ways of viewing the same phenomenon”.","Item and discourse","Good/bad with reason"],
+["Xiao & McEnery (2006)","Property of the node, distinct from semantic preference, a property of the collocates.","Node","Graded"],
+["Hunston (2007)","Two senses run together: (a) consistent co-occurrence with evaluative items; (b) Sinclair's discourse function of a unit.","Differs by sense","Attitude vs function"],
+["Philip (c. 2010)","Semantic association (optional, psychological) vs semantic prosody (obligatory, pragmatic, tied to phraseology).","Phraseology","Functional"],
+["Stewart (2010)","Discourse prosody (Sinclair's sense) vs semantic prosody (Louw's sense).","Unit vs word","Functional vs binary"],
+["Meaning-shift chapter","Prosody is an obligatory function of a unit of meaning, not inherently evaluative, synchronic and not hidden.","Unit of meaning","Functional"],
+["Smith & Nordquist (2012)","A node pairs consistently with negative or positive lexemes, stored in a construction.","Construction","Neg / neutral / pos"],
+["Tang & Liu","“an implicit but regular evaluative meaning associated with a lemma that can be made explicit by syntactico-semantic analyses”.","Collostruction","Pos / neutral / neg"]
+];
+
+const TIMELINE=[
+[1993,"Louw","Names semantic prosody; irony as collocative clash","founding","louw"],
+[1995,"Stubbs","CAUSE c. 80% negative; I-value and T-score demystified","founding","stubbs"],
+[1998,"Partington (ch. 4)","Prosody as a subtype of expressive connotation","consol","part98"],
+[2004,"Partington (IJCL)","Preference vs prosody; HAPPEN group; maximizers","consol","part04"],
+[2006,"Xiao & McEnery","Prosody replicates in Mandarin; graded near-synonym scales","consol","xm"],
+[2006,"Zethsen","Primer and manifesto for applied uses","consol","zeth"],
+[2007,"Hunston","Two senses; observation vs explanation vs prediction","crit","hun"],
+["c.2010","Philip","Semantic analysability; association vs prosody","crit","philip"],
+[2010,"Stewart","Book-length audit; discourse vs semantic prosody","crit","stew"],
+[2012,"Smith & Nordquist","Historical emergence of CAUSE's prosody","test","sn"],
+[2013,"Cheng","Encyclopedia chronology of definitions","consol","cheng"],
+[2013,"Mansoor & Salman","Prosody for learners; the adverb vitally","app","mans"],
+[2014,"Benna","Irony in A Farewell to Arms","app","benna"],
+["c.2019","Tang & Liu","Prosody concord resolves ALLEVIATE/CAUSE","test","tl"],
+["c.2013","Partington (ch. 10)","Evaluative prosody; SiBol 05","consol","part13"],
+[2023,"Shahzadi et al.","News headlines (see caveats)","app","shah"],
+[2023,"Jiang & Siyanova-Chanturia","Multiword expressions in Chinese (peripheral)","periph","jiang"],
+["2023/24","Sugawara & Kambara","CAUSE retested with sentiment analysis","test","sk"],
+[2019,"Li","Preserve and conserve in EFL teaching","app","li"],
+[2020,"Davies","English-Corpora.org guided tour (resource)","periph","davies"],
+[2024,"Looi & Cacciato","Data-driven learning of prosody","app","looi"],
+["n.d.","Meaning-shift chapter","Prosody as a function of the unit of meaning","crit","msu"],
+[2025,"Akhtar et al.","The Runaways","app","akh"],
+[2025,"Sidra & Anbreen","Beneficent in Pickthall's Qur'an","app","sidra"],
+[2026,"Fabian","Weaponization in media, 2021–2026","app","fab"]
+];
+
+const METHODS=[
+["Concordance (KWIC)","Lists every occurrence of the node with its co-text","All","Format can lead analysts to “envisage” links between lines that are not there (Stewart 2010, ch. 6)"],
+["Span","Words counted either side of the node (4:4, 5L–5R, 6:6; Koller and Mautner suggest 25)","Stubbs, Benna, Sidra & Anbreen, Cheng","Narrow spans invite speculation about wider context (Stewart, via Cheng)"],
+["Mutual information","Log of observed/expected co-occurrence","Stubbs, Xiao & McEnery, Sidra & Anbreen (MI3), Fabian","Inflated for rare items; non-directional (Stubbs 1995)"],
+["T-score","Tracks joint frequency (roughly its square root)","Stubbs, Fabian","Rewards frequent function-word pairings"],
+["Minimum frequency","Discard rare pairings (Stubbs: below 3–5; Xiao & McEnery: 3, or 20 in larger corpora)","Stubbs, Xiao & McEnery","A judgement call"],
+["Log-likelihood","Compares observed and expected counts; suits low-frequency items","Benna, Xiao & McEnery, Fabian","Still reports association, not evaluation"],
+["Collostructional analysis","Attraction between a construction's slots and their fillers","Tang & Liu; Sugawara & Kambara","Needs parsed data"],
+["Sentiment analysis (VADER, LIWC)","Scores words or texts for polarity from a dictionary","Sugawara & Kambara (VADER); Shahzadi et al. (LIWC)","Measures sentiment, not prosody"],
+["Manual evaluative coding","Analyst labels each line favourable, neutral or unfavourable","Stubbs, Partington, Xiao & McEnery, Smith & Nordquist","Subjective; Stewart argues intuition enters at every step"]
+];
+
+const CAUSE=[
+["Nordquist (2004), via Smith & Nordquist","Speakers asked to produce sentences",70],
+["Smith & Nordquist (2012), Early Modern English","Helsinki Corpus, 1500–1710, 353 tokens",48],
+["Smith & Nordquist (2012), early 1990s","Frown Corpus, 208 tokens",80.3],
+["Stubbs (1995)","Collocates, 1-million-word corpus (“nearly 80 per cent”)",80],
+["Xiao & McEnery (2006)","Verb CAUSE, 223 of 287 lines",78]
+];
+
+const FLASH=[
+["What the phenomenon is","Louw: an aura of meaning acquired from collocates.","Hunston: separate observation from explanation; Sinclair's attitudinal sense is distinct."],
+["Where it lives","Lexical item and its collocates (Louw, Stubbs).","Wider discourse or construction (Stewart, Smith & Nordquist, Tang & Liu)."],
+["What to call it","“Semantic prosody” for Louw's sense.","“Discourse prosody” (Stewart) or “semantic association” (Philip)."],
+["Can it predict?","Louw: a clash signals irony or insincerity.","Hunston: observation does not license prediction; a clean counter-example breaks it."],
+["Binary or graded","Positive/negative labels (Louw, Stubbs).","A cline from strong to weak (Partington 2004, Stewart 2010)."],
+["Can intuition find it?","Louw, Stubbs: prosody is hidden from intuition and revealed computationally.","Stewart: intuition enters at every step. Benna: speakers guessed the same collocates. Partington ch. 10 and the meaning-shift chapter: speakers use it intuitively; what is hidden is the pattern."],
+["How to measure it","Manual evaluative coding of concordances.","Automated sentiment tools (VADER, LIWC), which measure sentiment, not prosody."],
+["Is evaluation the definition?","Louw and Partington (“evaluative prosody”): prosody is a good/bad evaluation.","Meaning-shift chapter: evaluation is only one functional type of prosody."],
+["Is it historical?","Whitsitt (2005): a diachronic flow a synchronic corpus cannot show. Smith & Nordquist and Partington give historical case studies.","Meaning-shift chapter: the idiom principle is synchronic, so history is irrelevant at the time of use."],
+["Is it real?","Whitsitt (2005): a “figment of corpus linguists' imaginations” (as quoted by Philip).","Philip, Tang & Liu and Xiao & McEnery answer with analysability, constructions and cross-linguistic data."]
+];
+
+const TERMS=[
+["Louw (1993)","semantic prosody","Consistent aura of meaning from collocates"],
+["Stubbs (1995)","discourse prosody","Attitudinal function across collocational patterns"],
+["Hunston (2007)","attitudinal preference; semantic prosody (Sinclair's sense)","Separates attitude-in-use from lexical set preference"],
+["Philip","semantic association","Optional psychological aura, kept apart from prosody"],
+["Stewart (2010)","discourse prosody (Sinclair's) vs semantic prosody (Louw's)","Explicit two-way split"],
+["Smith & Nordquist (2012)","construction-based account","Prosody as a property of constructions"],
+["Tang & Liu","collostruction; prosody concord","Statistical association between a construction and its fillers"]
+];
+
+const AGREE=[
+["Collocation is the starting point","Every paper treats recurrent co-occurrence in corpora as the evidence base."],
+["Words are not neutral in context","Louw, Stubbs, Partington, Stewart and Hunston accept that some words pattern with an identifiable evaluative or attitudinal set of collocates."],
+["Corpus data is the main evidence","The papers rely on concordances, statistics or sentiment tools. Whether intuition is unreliable is disputed (see flashpoints)."],
+["Prosody is a matter of degree","Partington (2004) and Stewart (2010) describe stronger and weaker cases."],
+["Terminology is unsettled","Hunston, Philip and Stewart each point out that labels overlap or collide."],
+["Beyond English is worth testing","Xiao & McEnery (2006) and Zethsen (2006) treat prosody as relevant across languages and in translation."]
+];
+
+const OPEN=[
+["Is prosody a property of words, constructions or discourse?","Stewart; Smith & Nordquist; Tang & Liu"],
+["Can sentiment tools measure it, or only manual coding?","Shahzadi et al. vs manual studies"],
+["How stable is it across registers, genres and time?","Fabian; Sidra & Anbreen; Akhtar et al."],
+["Do cross-linguistic equivalents share prosodies?","Xiao & McEnery; Zethsen"],
+["Is the Hunston/Louw split substantive or terminological?","Your note “Hunston vs. Louw”"],
+["Which frequency, span and statistic count as sufficient evidence?","Methods tab"]
+];
+
+const GLOSS_EXTRA=[];
+
+const CHECK={
+ "Sources":[
+  "Fabian: PMW and corpus-size figures are inconsistent; PDF text was garbled and decoded.",
+  "Shahzadi et al.: LIWC measures sentiment, not prosody; some references could not be verified.",
+  "Sidra & Anbreen: the file is a resubmission draft, not the published version.",
+  "Philip, Tang & Liu, Mansoor & Salman: citation details are incomplete in the files.",
+  "Stubbs “discourse prosody”: Cheng dates it to 1995, Partington to 2001.",
+  "Stubbs and Louw page numbers differ across sources.",
+  "Stubbs 1995 is covered via the project guide because the scans have no text layer."],
+ "Your notes":[
+  "Partington 1998 vs 2004 are mislabelled in the Breakdown draft.",
+  "“Cause = weak prosody” attributed to Sinclair/Louw is not supported by the folder papers.",
+  "The Overview contains unverified claims (PSU-ARL, DS9 “Founders”, “still active” claims, “empirical evidence favors Hunston”); your own note says these are not verified.",
+  "The Hunston-vs-Louw “(Claude input)” sections are secondhand.",
+  "The Venn note that Hunston's distinction is “aimed at Louw” is your inference."],
+ "Second batch":[
+  "Partington's “Evaluative prosody” and the meaning-shift chapter: book, editors, year (and author for the meaning-shift chapter) are not shown on the files.",
+  "Li (2019) and Looi & Cacciato (2024) are teaching studies; neither tests the concept of prosody itself.",
+  "Davies is a corpus resource, useful for corpus sizes, not a research paper."],
+ "This guide":[
+  "Whitsitt (2005), Hoey (2005) and Sinclair's works are cited by the papers but are not in the folder; none was read.",
+  "Morley & Partington 2009, Lin & Chung 2016, McIntyre 2018 and Louw & Chateau 2010 come only from your notes.",
+  "Quotes and figures were drafted from the files; verify against the originals before citing."]
+};
+
+const REFS_OUT="Sinclair (1966, 1987, 1991, 1996, 2004); Firth (1957); Porzig (1934); Whitsitt (2005); Hoey (2005); Stubbs (1996, 2001); Tognini-Bonelli (2001); Stewart (2009). Reported in your notes only: Morley and Partington (2009), Lin and Chung (2016), McIntyre (2018), Louw and Chateau (2010).";
+
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const em=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\*([^*]+)\*/g,"<em>$1</em>");
+const plain=s=>s.replace(/\*/g,"");
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1600)}
+function copy(text){
+  const done=()=>toast("Copied");
+  const fb=()=>{const a=document.createElement("textarea");a.value=text;document.body.appendChild(a);a.select();try{document.execCommand("copy");done()}catch(e){toast("Select and copy manually")}a.remove()};
+  try{navigator.clipboard.writeText(text).then(done,fb)}catch(e){fb()}
+}
+function store(k,v){try{if(v===undefined)return localStorage.getItem("sp_"+k);localStorage.setItem("sp_"+k,v)}catch(e){return null}}
+const phc=p=>`var(${PH[p].c})`;
+
+/* ---------- panels ---------- */
+const TABS=[["start","Start here"],["vocab","Vocabulary"],["defs","Definitions"],["time","Timeline"],["lit","Literature"],["methods","Methods"],["debate","The debate"],["refs","References"],["check","Check first"]];
+const P={};
+const yk=y=>{const m=String(y).match(/\d{4}/);return m?+m[0]:9999};
+
+P.start=()=>`
+<h2>The idea in one paragraph</h2>
+<p class="lede">From the Overview of your master document.</p>
+<p class="big">Semantic prosody is the evaluative “colouring” a word or phrase acquires from the company it habitually keeps, even when its dictionary definition is neutral. <em>CAUSE</em> is the classic case: in a 1-million-word corpus roughly 80% of its collocates are negative, 18% neutral and about 2% positive (Stubbs 1995).</p>
+<h3>Where it came from</h3>
+<div class="lineage">
+ <div class="lin"><b>1934</b><div>Porzig: habitual pairings such as lick/tongue</div></div>
+ <div class="lin"><b>1957</b><div>Firth: collocation; phonological prosody as the metaphor</div></div>
+ <div class="lin"><b>1966–91</b><div>Sinclair: SET IN and HAPPEN keep unpleasant company</div></div>
+ <div class="lin"><b>1993</b><div>Louw names it and uses it to diagnose irony</div></div>
+ <div class="lin"><b>1995</b><div>Stubbs adds statistics and CAUSE</div></div>
+ <div class="lin"><b>1996–2004</b><div>Sinclair: prosody as the obligatory centre of the unit of meaning</div></div>
+</div>
+<h3>The arc in four moves</h3>
+<div class="grid">
+ <div class="box"><span class="eyebrow">Discovery</span><p>Sinclair identifies it, Louw names it, Stubbs measures it.</p><button class="btn alt" data-go="lit" data-f="founding">See founding papers</button></div>
+ <div class="box"><span class="eyebrow">Spread</span><p>Partington ties it to connotation, Xiao &amp; McEnery show it holds in Chinese, Zethsen packages it for applied work.</p><button class="btn alt" data-go="lit" data-f="consol">See consolidation</button></div>
+ <div class="box"><span class="eyebrow">Critique</span><p>Hunston shows the term names two things, Philip explains absence, Stewart audits every claim and proposes a split.</p><button class="btn alt" data-go="lit" data-f="crit">See critique</button></div>
+ <div class="box"><span class="eyebrow">New tests</span><p>History, constructions, sentiment tools, and applications to fiction, news, scripture and political vocabulary (2012–2026).</p><button class="btn alt" data-go="lit" data-f="test">See new tests</button></div>
+</div>
+<h3>If you remember three things</h3>
+<ol class="ul">
+ <li><b>Prosody is not preference.</b> Preference is the semantic set of the collocates; prosody is the evaluative meaning (Partington 2004; Xiao &amp; McEnery 2006).</li>
+ <li><b>The label collides.</b> Hunston and Philip reserve “semantic prosody” for Sinclair's functional sense; Stewart calls that same sense “discourse prosody”. Say whose labels you use.</li>
+ <li><b>CAUSE is no longer a settled example.</b> Older work finds it c. 80% negative; newer work finds it mostly neutral with constructional or sentiment methods (see The debate).</li>
+</ol>
+<div class="note"><b>Your working definition.</b> Your notes treat semantic preference as non-evaluative semantic type and semantic prosody as “evaluative drift” from typical collocates, with a “disruption test”. It fits Xiao &amp; McEnery and Partington's separation of the two layers, and the test is a practical version of Louw's collocative clash. It is your framework rather than one stated in a single source.</div>`;
+
+P.vocab=()=>`
+<h2>Vocabulary</h2><p class="lede">The neighbouring ideas to separate from prosody. Tap a row to copy it.</p>
+<div class="tw"><table><thead><tr><th>Term</th><th>What it is</th><th>Evaluative?</th><th>Example from the sources</th></tr></thead><tbody>
+${VOCAB.map((r,i)=>`<tr data-copy="${i}" style="cursor:pointer"><td>${em(r[0])}</td><td>${em(r[1])}</td><td>${em(r[2])}</td><td>${em(r[3])}</td></tr>`).join("")}
+</tbody></table></div>
+<div class="note"><b>Sinclair's model</b> (as reported by Cheng 2013 and Zethsen 2006): five categories of co-selection. Core and semantic prosody are obligatory; collocation, colligation and semantic preference are optional. Sinclair (2004): “the initial choice of semantic prosody is the functional choice which links meaning to purpose; all subsequent choices within the lexical item relate back to the prosody” (quoted in Cheng 2013).</div>`;
+
+P.defs=()=>`
+<h2>Competing definitions</h2><p class="lede">Who defines semantic prosody how. Use the filter to find an author.</p>
+<div class="search" style="margin-bottom:12px"><input id="defq" type="search" placeholder="Filter by author or idea…" aria-label="Filter definitions"></div>
+<div class="tw"><table id="deft"><thead><tr><th>Scholar</th><th>Definition or stance</th><th>Unit</th><th>Evaluative type</th></tr></thead><tbody>
+${DEFS.map(r=>`<tr>${r.map(c=>`<td>${em(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+<div class="note"><b>Terminology collision.</b> Hunston and Philip reserve “semantic prosody” for Sinclair's functional sense, while Stewart gives that sense a new name (“discourse prosody”) and keeps “semantic prosody” for Louw's. Anyone citing the split needs to say which author's labels they are using.</div>`;
+
+P.time=()=>`
+<h2>Timeline</h2><p class="lede">Every work in your folder, in order. Tap an entry to open it. Colours match the literature phases.</p>
+<div class="chips">${Object.entries(PH).map(([k,v])=>`<span class="chip" style="cursor:default"><span class="dot" style="--c:var(${v.c})"></span>${v.n}</span>`).join("")}</div>
+<ul class="tl">${TIMELINE.map((x,i)=>[x,i]).sort((p,q)=>(yk(p[0][0])-yk(q[0][0]))||(p[1]-q[1])).map(p=>p[0]).map(t=>`<li style="--c:${phc(t[3])}"><span class="yr">${t[0]}</span><span class="nd"></span><button data-open="${t[4]}"><b>${t[1]}</b><span>${t[2]}</span></button></li>`).join("")}</ul>
+<p class="lede" style="margin-top:14px">Sinclair–Louw–Stubbs are read as a pair (Louw interpretive, Stubbs evidentiary), and nearly everything after 2005 responds to what they left unspecified.</p>`;
+
+P.lit=()=>`
+<h2>Literature walkthrough</h2><p class="lede">25 works. Filter by phase, expand a card for the full entry, copy the citation. Amber tags mark things to check.</p>
+<div class="chips" id="phf"><button class="chip" aria-pressed="true" data-ph="all">All (${LIT.length})</button>
+${Object.entries(PH).map(([k,v])=>`<button class="chip" aria-pressed="false" data-ph="${k}"><span class="dot" style="--c:var(${v.c})"></span>${v.n} (${LIT.filter(l=>l.ph===k).length})</button>`).join("")}
+<button class="chip" id="warnf" aria-pressed="false">Needs checking</button>
+<button class="chip" id="expall" aria-pressed="false">Expand all</button></div>
+<div class="cards" id="cards">${LIT.map(l=>`
+<article class="card" id="c-${l.id}" data-ph="${l.ph}" data-warn="${l.warn||l.tags.some(t=>/check|Incomplete|Draft|inconsistent|Scan|OCR|decoded/i.test(t))?1:0}" style="--c:${phc(l.ph)}">
+ <button aria-expanded="false"><span class="t">${em(l.short)}: ${em(l.title)}</span><span class="y">${l.yl||l.y}</span>
+  <span class="s">${em(l.one)}</span>
+  <span class="tags"><span class="tag">${PH[l.ph].n}</span>${l.tags.map(t=>`<span class="tag${/check|incomplete|draft|inconsistent|scan|ocr|decoded|caution/i.test(t)?" w":""}">${t}</span>`).join("")}</span></button>
+ <div class="body" hidden>
+  ${l.warn?`<div class="note"><b>Check.</b> ${em(l.warn)}</div>`:""}
+  <dl style="margin:6px 0">${l.f.map(f=>`<div class="f"><dt>${f[0]}</dt><dd>${em(f[1])}</dd></div>`).join("")}</dl>
+  <div class="cite">${em(l.cite)}</div>
+  <div class="row"><button class="btn" data-cite="${l.id}">Copy citation</button></div>
+ </div></article>`).join("")}</div>`;
+
+P.methods=()=>`
+<h2>Methods and statistics</h2><p class="lede">Most disputes start with two choices: how to decide a pattern is strong enough, and how to label a collocate favourable or unfavourable.</p>
+<div class="tw"><table><thead><tr><th>Tool or step</th><th>What it does</th><th>Where it appears</th><th>Known limit</th></tr></thead><tbody>
+${METHODS.map(r=>`<tr>${r.map(c=>`<td>${em(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+<h3>Stubbs's workflow</h3>
+<p>Rank collocates by frequency, drop singletons, re-rank by I, drop low-I cases, re-rank by T, drop low-T cases, then read the surviving list by hand. He also warns that “statistical significance” is misapplied because text is not a random sample.</p>
+<h3>Two recurring cautions</h3>
+<div class="grid"><div class="box"><b>A specialised corpus can manufacture prosody.</b><p>Hunston's 13-article conflict corpus shows almost any word sitting near negative evaluation when every text is hostile.</p></div>
+<div class="box"><b>The label is a judgement.</b><p>Stewart notes that Stubbs's “80% negative” and Xiao &amp; McEnery's three-way coding rest on analysts' own native-speaker reactions, the intuition Louw and Stubbs call unreliable.</p></div></div>`;
+
+P.debate=()=>`
+<h2>The debate</h2>
+<p class="lede">Many disagreements are partly terminological. The substantive ones concern (1) lexical vs constructional, (2) observation vs explanation or prediction, (3) how far sentiment tools can stand in for human coding.</p>
+<h3>CAUSE across studies</h3>
+<p class="lede" style="margin-bottom:10px">Share of negative tokens or collocates. Methods differ, so compare with care.</p>
+<div class="bars" id="bars">${CAUSE.map(c=>`<div class="br"><div>${c[0]}<small>${c[1]}</small></div><div class="tr"><div class="fill" data-w="${c[2]}"></div></div><div class="v">${c[2]}%</div></div>`).join("")}</div>
+<div class="grid" style="margin-top:12px">
+ <div class="box"><b>Tang &amp; Liu</b><p>CAUSE is mainly neutral: in 57.81% of collostructions no collexeme primes a prosody; negative is more frequent than positive where polarity is expressed.</p></div>
+ <div class="box"><b>Sugawara &amp; Kambara</b><p>Neutral–Neutral is the most common subject–object pairing in TED data (VADER), objects leaning slightly negative.</p></div>
+</div>
+<div class="note"><b>Check.</b> Your notes attribute a “weak prosody” label for CAUSE to Sinclair or Louw. The papers in your folder do not support that.</div>
+<h3>Flashpoints</h3>
+<div id="fps">${FLASH.map((f,i)=>`<div class="fp"><button aria-expanded="false"><span>${f[0]}</span><span aria-hidden="true">+</span></button><div class="sides" hidden><div class="sd"><b>Position A</b>${em(f[1])}</div><div class="sd"><b>Position B</b>${em(f[2])}</div></div></div>`).join("")}</div>
+<h3>Terminology map</h3>
+<div class="tw"><table><thead><tr><th>Author</th><th>Term used</th><th>What it covers</th></tr></thead><tbody>${TERMS.map(r=>`<tr>${r.map(c=>`<td>${em(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+<h3>Where scholars agree</h3>
+<ul class="ul">${AGREE.map(a=>`<li><b>${a[0]}.</b> ${em(a[1])}</li>`).join("")}</ul>
+<h3>Open questions</h3>
+<div class="tw"><table><thead><tr><th>Question</th><th>Where it comes from</th></tr></thead><tbody>${OPEN.map(o=>`<tr><td>${o[0]}</td><td>${o[1]}</td></tr>`).join("")}</tbody></table></div>
+<p class="lede" style="margin-top:10px">Questions marked “(Claude input)” in your notes are secondhand and unverified.</p>
+<h3>Skeptics and secondary voices</h3>
+<p>Whitsitt (2005) is the outside sceptic that Hunston, Philip and Cheng answer; he is cited in those papers and is not in your folder. Hoey's views reach you through Partington 2004 and Stewart 2010.</p>`;
+
+P.refs=()=>`
+<h2>Complete reference list</h2><p class="lede">Every scholarly work in your folder, alphabetical. Where a file did not show a journal, year or volume, that is stated rather than filled in.</p>
+<div class="row" style="margin-bottom:12px"><button class="btn" id="copyall">Copy all citations</button></div>
+<ol class="refs">${[...LIT].sort((a,b)=>plain(a.cite).localeCompare(plain(b.cite))).map(l=>`<li><div>${em(l.cite)}${l.tags.some(t=>/copies/.test(t))?"":""}</div><button class="btn alt" data-cite="${l.id}">Copy</button></li>`).join("")}</ol>
+<h3>Your own notes (not literature)</h3>
+<ul class="ul"><li><em>Semantic Prosody Overview and relevant info</em></li><li><em>20260911 Hunston vs. Louw</em></li><li><em>Semantic Prosody Article Breakdown</em> (same content as reading companion Part Two)</li><li><em>semantic-prosody-template-notes</em></li><li><em>Semantic Prosody Breakdown (Draft)</em> and <em>Venn Diagram Drafts and Notes Updated</em></li></ul>
+<p class="lede">Also in the folder: an epub of Ann Radcliffe's <em>A Sicilian Romance</em>, a novel that is not part of the literature.</p>
+<h3>Cited by the papers, not in your folder</h3><p>${REFS_OUT}</p>
+<h3>Glossary</h3>
+<div class="gl">${VOCAB.map(v=>`<div><b>${em(v[0])}</b><div>${em(v[1])}</div></div>`).join("")}</div>`;
+
+P.check=()=>{
+ const n=Object.values(CHECK).flat().length;
+ return `<h2>Check before citing</h2><p class="lede">Tick items off as you verify them. Ticks stay in this browser.</p>
+ <p class="prog" id="prog"></p>
+ ${Object.entries(CHECK).map(([g,items])=>`<h3>${g}</h3>${items.map((t,i)=>{const id=g.replace(/\W/g,"")+i;return `<div class="ck"><input type="checkbox" id="k-${id}" data-k="${id}"><label for="k-${id}">${em(t)}</label></div>`}).join("")}`).join("")}
+ <h3>Reading status of the folder</h3>
+ <div class="tw"><table><thead><tr><th>Status</th><th>Works</th></tr></thead><tbody>
+ <tr><td>Read from full text</td><td>Louw, Partington 1998, 2004 and ch. 10, the meaning-shift chapter, Li, Looi &amp; Cacciato, Davies, Xiao &amp; McEnery, Zethsen, Hunston, Philip, Stewart, Smith &amp; Nordquist, Cheng, Benna, Mansoor &amp; Salman, Shahzadi et al., Sugawara &amp; Kambara, Akhtar et al. (abstract, framing, conclusion), Sidra &amp; Anbreen, Jiang &amp; Siyanova-Chanturia</td></tr>
+ <tr><td>Scan, no text layer</td><td>Stubbs 1995 (covered via your project guide)</td></tr>
+ <tr><td>OCR or decoded</td><td>Tang &amp; Liu (OCR); Fabian (garbled text decoded)</td></tr></tbody></table></div>`;
+};
+
+/* ---------- shell ---------- */
+let cur="start";
+const main=$("#main");
+function show(tab,opts={}){
+  if(!P[tab])tab="start";cur=tab;
+  main.innerHTML=`<section class="panel" id="panel-${tab}">${P[tab]()}</section>`;
+  $$(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===tab));
+  wire(tab);store("tab",tab);
+  try{history.replaceState(null,"","#"+tab)}catch(e){}
+  if(!opts.keep)window.scrollTo({top:0});
+  if(opts.filter)setPhase(opts.filter);
+  if(opts.open)openCard(opts.open);
+}
+$("#tabs").innerHTML=TABS.map(t=>`<button class="tab" role="tab" data-t="${t[0]}" aria-selected="false">${t[1]}</button>`).join("");
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b)show(b.dataset.t)});
+
+function setPhase(ph){
+  $$("#phf [data-ph]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ph===ph));
+  $("#warnf")&&$("#warnf").setAttribute("aria-pressed","false");
+  $$(".card").forEach(c=>c.hidden=!(ph==="all"||c.dataset.ph===ph));
+}
+function openCard(id){
+  const c=$("#c-"+id);if(!c)return;
+  $$(".card").forEach(x=>x.hidden=false);
+  $$("#phf [data-ph]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ph==="all"));
+  const b=$("button",c);b.setAttribute("aria-expanded","true");$(".body",c).hidden=false;
+  c.scrollIntoView({block:"start",behavior:"smooth"});
+  c.style.outline="2px solid var(--accent)";setTimeout(()=>c.style.outline="",1800);
+}
+function wire(tab){
+  $$("[data-go]",main).forEach(b=>b.onclick=()=>show("lit",{filter:b.dataset.f}));
+  $$("[data-open]",main).forEach(b=>b.onclick=()=>show("lit",{open:b.dataset.open}));
+  $$("[data-cite]",main).forEach(b=>b.onclick=()=>copy(plain(LIT.find(l=>l.id===b.dataset.cite).cite)));
+  if(tab==="vocab")$$("tr[data-copy]",main).forEach(r=>r.onclick=()=>{const v=VOCAB[r.dataset.copy];copy(plain(v[0]+": "+v[1]))});
+  if(tab==="defs"){$("#defq").oninput=e=>{const q=e.target.value.toLowerCase();$$("#deft tbody tr").forEach(r=>r.hidden=q&&!r.textContent.toLowerCase().includes(q))}}
+  if(tab==="lit"){
+    $$(".card>button",main).forEach(b=>b.onclick=()=>{const o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",!o);$(".body",b.parentElement).hidden=o});
+    $$("#phf [data-ph]").forEach(b=>b.onclick=()=>setPhase(b.dataset.ph));
+    $("#warnf").onclick=e=>{const on=e.target.getAttribute("aria-pressed")!=="true";e.target.setAttribute("aria-pressed",on);$$("#phf [data-ph]").forEach(b=>b.setAttribute("aria-pressed",false));$$(".card").forEach(c=>c.hidden=on&&c.dataset.warn!=="1")};
+    $("#expall").onclick=e=>{const on=e.target.getAttribute("aria-pressed")!=="true";e.target.setAttribute("aria-pressed",on);e.target.textContent=on?"Collapse all":"Expand all";$$(".card").forEach(c=>{c.firstElementChild.setAttribute("aria-expanded",on);$(".body",c).hidden=!on})};
+  }
+  if(tab==="debate"){
+    requestAnimationFrame(()=>$$(".fill").forEach(f=>f.style.width=f.dataset.w+"%"));
+    $$("#fps .fp>button").forEach(b=>b.onclick=()=>{const s=b.nextElementSibling,o=!s.hidden;s.hidden=o;b.setAttribute("aria-expanded",!o);b.lastElementChild.textContent=o?"+":"−"});
+    $("#fps .fp>button")&&$("#fps .fp>button").click();
+  }
+  if(tab==="refs"){$("#copyall").onclick=()=>copy([...LIT].sort((a,b)=>plain(a.cite).localeCompare(plain(b.cite))).map(l=>plain(l.cite)).join("\n\n"))}
+  if(tab==="check"){
+    let saved={};try{saved=JSON.parse(store("ck")||"{}")}catch(e){}
+    const upd=()=>{const all=$$("[data-k]");$("#prog").textContent=all.filter(i=>i.checked).length+" of "+all.length+" checked"};
+    $$("[data-k]").forEach(i=>{i.checked=!!saved[i.dataset.k];i.onchange=()=>{saved[i.dataset.k]=i.checked;store("ck",JSON.stringify(saved));upd()}});upd();
+  }
+}
+
+/* ---------- search ---------- */
+const IDX=[];
+LIT.forEach(l=>IDX.push({k:"Literature",t:l.short+" ("+(l.yl||l.y)+")",s:l.one,x:plain(l.title+" "+l.f.map(f=>f.join(" ")).join(" ")+" "+l.cite),a:()=>show("lit",{open:l.id})}));
+VOCAB.forEach(v=>IDX.push({k:"Vocabulary",t:plain(v[0]),s:plain(v[1]),x:plain(v.join(" ")),a:()=>show("vocab")}));
+DEFS.forEach(d=>IDX.push({k:"Definition",t:d[0],s:plain(d[1]),x:plain(d.join(" ")),a:()=>show("defs")}));
+FLASH.forEach(f=>IDX.push({k:"Debate",t:f[0],s:plain(f[1]+" / "+f[2]),x:plain(f.join(" ")),a:()=>show("debate")}));
+METHODS.forEach(m=>IDX.push({k:"Methods",t:m[0],s:m[1],x:m.join(" "),a:()=>show("methods")}));
+OPEN.forEach(o=>IDX.push({k:"Open question",t:o[0],s:o[1],x:o.join(" "),a:()=>show("debate")}));
+const qi=$("#q"),res=$("#results");
+function search(){
+  const q=qi.value.trim().toLowerCase();
+  if(q.length<2){res.hidden=true;return}
+  const hits=IDX.map(i=>({i,sc:(i.t.toLowerCase().includes(q)?2:0)+(i.x.toLowerCase().includes(q)?1:0)})).filter(h=>h.sc).sort((a,b)=>b.sc-a.sc).slice(0,12);
+  res.hidden=false;
+  res.innerHTML=hits.length?hits.map((h,n)=>`<button data-n="${n}"><div class="rk">${h.i.k}</div><div class="rt">${h.i.t}</div><div class="rs">${h.i.s.slice(0,110)}</div></button>`).join(""):`<div class="empty">No matches for “${q.replace(/</g,"&lt;")}”</div>`;
+  $$("button",res).forEach(b=>b.onclick=()=>{hits[b.dataset.n].i.a();res.hidden=true;qi.value=""});
+}
+qi.addEventListener("input",search);
+document.addEventListener("keydown",e=>{
+  if(e.key==="/"&&document.activeElement.tagName!=="INPUT"&&document.activeElement.tagName!=="TEXTAREA"){e.preventDefault();qi.focus()}
+  if(e.key==="Escape"){res.hidden=true;qi.blur()}
+});
+document.addEventListener("click",e=>{if(!e.target.closest(".searchrow"))res.hidden=true});
+
+/* theme */
+$("#themeBtn").onclick=()=>{
+  const r=document.documentElement,d=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme:dark)").matches);
+  r.dataset.theme=d?"light":"dark";store("theme",r.dataset.theme);
+};
+{const t=store("theme");if(t)document.documentElement.dataset.theme=t}
+
+const h=location.hash.slice(1);
+show(P[h]?h:(P[store("tab")]?store("tab"):"start"),{keep:true});
+</script>
+
+</body></html>
